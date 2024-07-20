@@ -1,3 +1,4 @@
+const userSchema = require("../../database/Schemas/userSchema");
 const { e401 } = require("../../functions/e401");
 
 module.exports = {
@@ -14,6 +15,15 @@ module.exports = {
             if (!email) e401(res, 'MISSING_EMAIL');
             if (!password) e401(res, 'MISSING_PASSWORD');
 
+            if (nickname && email && password) {
+                const newId = await userSchema.estimatedDocumentCount() + 1;
+                await userSchema.create({
+                    idU: String(newId),
+                    email: email,
+                    password: password,
+                    username: username,
+                });
+            };
         } catch (err) {
             console.log(err);
         };
